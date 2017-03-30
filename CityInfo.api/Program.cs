@@ -16,6 +16,7 @@ namespace CityInfo.api
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
+                .UseUrls("http://*:1028")
                 .UseApplicationInsights()
                 .Build();
 
