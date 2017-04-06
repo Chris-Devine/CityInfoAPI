@@ -19,7 +19,7 @@ namespace CityInfo.api
                     Id = 1,
                     Name = "New York City",
                     Description = "Hell hole",
-                    PointOfIntrest = new List<PointOfIntrestDto>()
+                    PointOfInterest = new List<PointOfIntrestDto>()
                     {
                         new PointOfIntrestDto()
                         {
@@ -40,7 +40,7 @@ namespace CityInfo.api
                     Id = 2,
                     Name = "Runcorn",
                     Description = "Swamp on no return",
-                    PointOfIntrest = new List<PointOfIntrestDto>()
+                    PointOfInterest = new List<PointOfIntrestDto>()
                     {
                         new PointOfIntrestDto()
                         {
@@ -61,7 +61,7 @@ namespace CityInfo.api
                     Id = 3,
                     Name = "Manchester",
                     Description = "House of horrors",
-                    PointOfIntrest = new List<PointOfIntrestDto>()
+                    PointOfInterest = new List<PointOfIntrestDto>()
                     {
                         new PointOfIntrestDto()
                         {
