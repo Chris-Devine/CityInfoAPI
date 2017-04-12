@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using NLog.Web;
+using NLog.Extensions.Logging;
 
 namespace CityInfo.api
 {
@@ -36,9 +38,16 @@ namespace CityInfo.api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app,  IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
+
+            loggerFactory.AddDebug();
+
+            //loggerFactory.AddProvider(new NLog.Extensions.Logging.NLogLoggerProvider());
+
+            loggerFactory.AddNLog();
+            env.ConfigureNLog("nlog.config");
 
             if (env.IsDevelopment())
             {
