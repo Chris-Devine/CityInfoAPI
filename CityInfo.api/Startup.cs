@@ -18,10 +18,17 @@ namespace CityInfo.api
 {
     public class Startup
     {
+        // This static property will hol the setting depending and can be called anywere in the app
         public static IConfigurationRoot Configuration;
 
         public Startup(IHostingEnvironment env)
         {
+            /*
+             * This builder will create the setting for prop "IConfigurationRoot Configuration" using json files.
+             * The postion of the json files matter the top one should be all your default/developer setting and
+             * any json files that change the setting on enviroment should come after. This is because the last one
+             * in overwrites the default. Kind of like the cascading effect of CSS
+            */ 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appSettings.json", optional: false, reloadOnChange: true)
