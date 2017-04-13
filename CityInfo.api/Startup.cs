@@ -11,6 +11,7 @@ using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using NLog.Web;
 using NLog.Extensions.Logging;
+using CityInfo.api.Services;
 
 namespace CityInfo.api
 {
@@ -24,17 +25,34 @@ namespace CityInfo.api
                 .AddMvcOptions(o => o.OutputFormatters.Add(
                         new XmlDataContractSerializerOutputFormatter()
                     ));
-                //.AddJsonOptions(o =>
-                //{
-                //    // This will prevent the API changing the prop names it returns, this is usually not needed but nice to know
-                //    if(o.SerializerSettings.ContractResolver != null)
-                //    {
-                //        var castedResolver = o.SerializerSettings.ContractResolver
-                //            as DefaultContractResolver;
-                //        castedResolver.NamingStrategy = null;
+            //.AddJsonOptions(o =>
+            //{
+            //    // This will prevent the API changing the prop names it returns, this is usually not needed but nice to know
+            //    if(o.SerializerSettings.ContractResolver != null)
+            //    {
+            //        var castedResolver = o.SerializerSettings.ContractResolver
+            //            as DefaultContractResolver;
+            //        castedResolver.NamingStrategy = null;
 
-                //    }
-                //});
+            //    }
+            //});
+
+            // Created each time they are requested, great for lightweight, stateless services
+            // services.AddTransient<>
+
+            // Created once per request 
+            // services.AddScoped<>
+
+            // Created the first time they are requested 
+            // services.AddSingleton<>
+
+            // This now swaps the mailService passed to the controller in points of intrest depending on the build type
+
+#if DEBUG 
+            services.AddTransient<IMailService, LocalMailService>();
+#else
+            services.AddTransient<IMailService, CloudMailService>();
+#endif
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
