@@ -17,6 +17,8 @@ namespace CityInfo.api.Entities
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }
+        [MaxLength(200)]
+        public string Description { get; set; }
 
         /*
          * Here we can just use the public City City {get;set;} property to map the points of intrest baack to the 

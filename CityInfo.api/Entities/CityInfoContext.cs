@@ -14,7 +14,7 @@ namespace CityInfo.api.Entities
            : base(options)
         {
             // Will create the DB if it does not exsist 
-            Database.EnsureCreated();
+            Database.Migrate();
         }
 
         public DbSet<City> Cities { get; set; }

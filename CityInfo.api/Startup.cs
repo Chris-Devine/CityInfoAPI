@@ -30,11 +30,17 @@ namespace CityInfo.api
              * The postion of the json files matter the top one should be all your default/developer setting and
              * any json files that change the setting on enviroment should come after. This is because the last one
              * in overwrites the default. Kind of like the cascading effect of CSS
-            */ 
+             * 
+             * Add Environment Variables is used to store sensitive information (connections string) and is called last in this que
+             * also the name must match the name in the default app setting file so that it can overwrite it in the css type flow.
+             * But this is not good because the enviromental variables live only on your machine and are not submitted to source control.
+             * They should be added to the production sytem enviroment variable (not in the code).
+            */
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appSettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appSettings.{env.EnvironmentName}.json", optional:true, reloadOnChange:true);
+                .AddJsonFile($"appSettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
 
             Configuration = builder.Build();
         }
@@ -75,7 +81,7 @@ namespace CityInfo.api
 #else
             services.AddTransient<IMailService, CloudMailService>();
 #endif
-            var connectionString = @"Server=(localdb)\mssqllocaldb;Database=CityInfoDB;Trusted_Connection=True;";
+            var connectionString = Startup.Configuration["connectionStrings:cityInfoDBConnectionString"];
             services.AddDbContext<CityInfoContext>(o => o.UseSqlServer(connectionString));
 
         }
