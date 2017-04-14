@@ -87,7 +87,8 @@ namespace CityInfo.api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app,  IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app,  IHostingEnvironment env, ILoggerFactory loggerFactory,
+            CityInfoContext cityInfoContext)
         {
             loggerFactory.AddConsole();
 
@@ -106,6 +107,9 @@ namespace CityInfo.api
             {
                 app.UseExceptionHandler();
             }
+
+            // Seed data will not be release until Milestone 2 of EF core is release so for now we call the seed method here
+            cityInfoContext.EnsureSeedDataForContext();
 
             app.UseStatusCodePages();
 
