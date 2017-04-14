@@ -6,16 +6,17 @@ using CityInfo.api.Entities;
 
 namespace CityInfo.api.Services
 {
-    interface ICityInfoRepository
+    public interface ICityInfoRepository
     {
         /*
          * IQueryable allow the consumer to addon to the query before the query is executed, this leaks data peristance.
          * IEnummrable means that the consumer cannot addon to the query before its executed so data persitance is not leaked. 
          * Both are valid and there is a debate on which is best, I say IEnummrable
          */
+        bool CityExists(int cityId);
         IEnumerable<City> GetCities();
         City GetCity(int cityId, bool includePointsOfIntrest);
         IEnumerable<PointOfInterest> GetPointsOfInterestForCity(int cityId);
-        PointOfInterest GetPointOfIntrestForCity(int cityId, int pointOfInterestId);
+        PointOfInterest GetPointOfInterestForCity(int cityId, int pointOfInterestId);
     }
 }
