@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using CityInfo.api.Services;
 
@@ -33,33 +34,15 @@ namespace CityInfo.api.Controllers
         {
             try
             {
-                //var city = CitiesDataStore.current.Cities.FirstOrDefault(c => c.Id == cityId);
                 if (!_cityInfoRepository.CityExists(cityId))
                 {
                     _logger.LogInformation($"City with id {cityId} was not found when accessing points of interest");
                     return NotFound();
                 }
                 var pointsOfInterestForCity = _cityInfoRepository.GetPointsOfInterestForCity(cityId);
-
-                var pointsOfInterestForCityResults = new List<PointOfIntrestDto>();
-                foreach (var poi in pointsOfInterestForCity)
-                {
-                    pointsOfInterestForCityResults.Add(new PointOfIntrestDto()
-                    {
-                        Id = poi.Id,
-                        Name = poi.Name,
-                        Description = poi.Description
-                    });
-                }
+                var pointsOfInterestForCityResults = Mapper.Map<IEnumerable<PointOfIntrestDto>>(pointsOfInterestForCity);
 
                 return Ok(pointsOfInterestForCityResults);
-
-                //if (city == null)
-                //{
-                //    _logger.LogInformation($"City with id {cityId} wasn't found when accessing points of interest.");
-                //    return NotFound();
-                //}
-                //return Ok(city.PointOfInterest);
             }
             catch (Exception ex)
             {
@@ -82,14 +65,9 @@ namespace CityInfo.api.Controllers
                 return NotFound();
             }
 
-            var pointOfInterestResult = new PointOfIntrestDto()
-            {
-                Id = pointsOfIntrest.Id,
-                Name = pointsOfIntrest.Name,
-                Description = pointsOfIntrest.Description
-            };
+            var pointOfInterestResult = Mapper.Map<PointOfIntrestDto>(pointsOfIntrest);
 
-            return Ok(pointsOfIntrest);
+            return Ok(pointOfInterestResult);
         }
 
         [HttpPost("{cityId}/pointsofinterest")]
@@ -120,7 +98,7 @@ namespace CityInfo.api.Controllers
 
             // Demo Purpose will be improved later
             var maxPointOfIntrest = CitiesDataStore.current.Cities.SelectMany(
-                c => c.PointOfInterest).Max(p => p.Id);
+                c => c.PointsOfInterest).Max(p => p.Id);
 
             var finalPointOfIntrest = new PointOfIntrestDto()
             {
@@ -129,7 +107,7 @@ namespace CityInfo.api.Controllers
                 Description = pointOfInterest.Description
             };
 
-            city.PointOfInterest.Add(finalPointOfIntrest);
+            city.PointsOfInterest.Add(finalPointOfIntrest);
 
             return CreatedAtRoute("GetPointOfInterest", new
             {
@@ -164,7 +142,7 @@ namespace CityInfo.api.Controllers
                 return NotFound();
             }
 
-            var pointOfInterestFromStore = city.PointOfInterest.FirstOrDefault(p => p.Id == id);
+            var pointOfInterestFromStore = city.PointsOfInterest.FirstOrDefault(p => p.Id == id);
             if (pointOfInterestFromStore == null)
             {
                 return NotFound();
@@ -191,7 +169,7 @@ namespace CityInfo.api.Controllers
                 return NotFound();
             }
 
-            var pointOfInterestFromStore = city.PointOfInterest.FirstOrDefault(p => p.Id == id);
+            var pointOfInterestFromStore = city.PointsOfInterest.FirstOrDefault(p => p.Id == id);
             if (pointOfInterestFromStore == null)
             {
                 return NotFound();
@@ -239,13 +217,13 @@ namespace CityInfo.api.Controllers
                 return NotFound();
             }
 
-            var pointOfInterestFromStore = city.PointOfInterest.FirstOrDefault(p => p.Id == id);
+            var pointOfInterestFromStore = city.PointsOfInterest.FirstOrDefault(p => p.Id == id);
             if (pointOfInterestFromStore == null)
             {
                 return NotFound();
             }
 
-            city.PointOfInterest.Remove(pointOfInterestFromStore);
+            city.PointsOfInterest.Remove(pointOfInterestFromStore);
 
             _mailService.Send("Point of interest deleted.",
                 $"Point of intrest {pointOfInterestFromStore.Name} with id {pointOfInterestFromStore.Id} was deleted.");

@@ -14,6 +14,7 @@ using NLog.Extensions.Logging;
 using CityInfo.api.Services;
 using Microsoft.Extensions.Configuration;
 using CityInfo.api.Entities;
+using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.EntityFrameworkCore;
 
 namespace CityInfo.api
@@ -115,6 +116,13 @@ namespace CityInfo.api
             cityInfoContext.EnsureSeedDataForContext();
 
             app.UseStatusCodePages();
+
+            AutoMapper.Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Entities.City, Models.CityWithoutPointsOfInterestDto>();
+                cfg.CreateMap<Entities.City, Models.CityDto>();
+                cfg.CreateMap<Entities.PointOfInterest, Models.PointOfIntrestDto>();
+            });
 
             app.UseMvc();
 
