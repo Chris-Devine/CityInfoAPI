@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using CityInfo.api.Entities;
 using Microsoft.Extensions.Logging;
 using CityInfo.api.Services;
 
@@ -90,30 +91,27 @@ namespace CityInfo.api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var city = CitiesDataStore.current.Cities.FirstOrDefault(c => c.Id == cityId);
-            if (city == null)
+            if (!_cityInfoRepository.CityExists(cityId))
             {
                 return NotFound();
             }
 
-            // Demo Purpose will be improved later
-            var maxPointOfIntrest = CitiesDataStore.current.Cities.SelectMany(
-                c => c.PointsOfInterest).Max(p => p.Id);
+            var finalPointOfIntrest = Mapper.Map<PointOfInterest>(pointOfInterest);
 
-            var finalPointOfIntrest = new PointOfIntrestDto()
+            _cityInfoRepository.AddPointOfInterestForCity(cityId, finalPointOfIntrest);
+
+            if (!_cityInfoRepository.Save())
             {
-                Id = maxPointOfIntrest,
-                Name = pointOfInterest.Name,
-                Description = pointOfInterest.Description
-            };
+                return StatusCode(500, "A problem happened while handling yout request.");
+            }
 
-            city.PointsOfInterest.Add(finalPointOfIntrest);
+            var createdPointOfInterestToReturn = Mapper.Map<PointOfIntrestDto>(finalPointOfIntrest);
 
             return CreatedAtRoute("GetPointOfInterest", new
             {
                 cityId = cityId,
-                id = finalPointOfIntrest.Id
-            }, finalPointOfIntrest);
+                id = createdPointOfInterestToReturn.Id
+            }, createdPointOfInterestToReturn);
         }
 
         [HttpPut("{cityId}/pointsofinterest/{id}")]
